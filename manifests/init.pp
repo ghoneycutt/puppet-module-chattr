@@ -11,6 +11,8 @@ class chattr (
   $attribute_removes_hiera_merge = true,
 ) {
 
+  notify { 'wip branch of ghoneycutt repo': }
+
   if type($attribute_adds_hiera_merge) == 'string' {
     $attribute_adds_hiera_merge_real = str2bool($attribute_adds_hiera_merge)
   } else {
