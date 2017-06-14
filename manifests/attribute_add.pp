@@ -1,18 +1,22 @@
 # == Define: chattr::attribute_add
 #
 define chattr::attribute_add (
-  $attribute = 'i',
+  Pattern[/^[aAcCdDeijsStTu]{1}$/] $attribute = 'i',
+  Optional[String] $file_path = undef,
 ) {
-
-  validate_re($attribute,'^[a-zA-Z]{1}$',"chattr::attribute_add::${name} is ${attribute}. Attribute must be a single letter. See CHATTR(1).")
 
   File <||> -> Exec <| tag == 'chattr_attribute_add' |>
   Host <||> -> Exec <| tag == 'chattr_attribute_add' |>
   Resources <||> -> Exec <| tag == 'chattr_attribute_add' |>
 
-  exec { "chattr +i ${name}":
-    path   => '/bin:/usr/bin:/sbin:/usr/sbin',
-    unless => "lsattr ${name} | awk \'{print \$1}\' |grep ${attribute}",
+  case $file_path {
+    undef:           { $t_file_path = $name }
+    default:         { $t_file_path = $file_path }
+  }
+
+  exec { "chattr +${attribute} ${t_file_path}":
+    path   => ['/usr/sbin','/usr/bin','/bin'],
+    unless => "lsattr ${t_file_path} | awk \'{print \$1}\' |grep ${attribute}",
     tag    => 'chattr_attribute_add',
   }
 }
