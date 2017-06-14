@@ -1,15 +1,19 @@
 # puppet-module-chattr
 ===
 
-[![Build Status](https://travis-ci.org/kinneygroup/puppet-module-chattr.png?branch=master)](https://travis-ci.org/kinneygroup/puppet-module-chattr)
-
 Hack to get around Puppet's inability to manage files with the immutable attribute set as described in issue [PUP-1199](https://tickets.puppetlabs.com/browse/PUP-1199)
 
 ===
 
 # Compatibility
 ---------------
-This module is built for use with Puppet v3 with Ruby versions 1.8.7, 1.9.3, and 2.0.0 on all Linux systems.
+This module is built for use with Puppet v4 with Ruby versions 1.8.7, 1.9.3, and 2.0.0 on all Linux systems.
+
+===
+
+# Requirements
+---------------
+The chattr module requires the [puppetlabs-stdlib](https://github.com/puppetlabs/puppetlabs-stdlib) module.
 
 ===
 
@@ -22,9 +26,12 @@ chattr::attribute_adds:
   '/etc/no_change':
     attribute: 'i'
 chattr::attribute_removes:
-  '/etc/no_change':
+  '/etc/no_change immutable':
+    file_path: '/etc/no_change'
     attribute: 'i'
 </pre>
+
+In order to update multiple attributes on a single file use distinct names along with the file_path parameter.
 
 ===
 
@@ -72,6 +79,12 @@ chattr attribute to add. See CHATTR(1). Defaults to 'i' for immutable.
 
 - *Default*: 'i'
 
+file_path
+---------
+Fully qualified path to the file to be modified.
+
+- *Default*: undef
+
 # Define chattr::attribute_remove
 ## Parameters
 ------------
@@ -81,3 +94,9 @@ attribute
 chattr attribute to remove. See CHATTR(1). Defaults to 'i' for immutable.
 
 - *Default*: 'i'
+
+file_path
+---------
+Fully qualified path to the file to be modified.
+
+- *Default*: undef
